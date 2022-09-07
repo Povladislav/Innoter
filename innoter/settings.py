@@ -35,14 +35,24 @@ CUSTOM_APPS = [
 ]
 
 INSTALLED_APPS = [
-    'django.contrib.admin',
-    'django.contrib.auth',
-    'django.contrib.contenttypes',
-    'django.contrib.sessions',
-    'django.contrib.messages',
-    'django.contrib.staticfiles',
-] + CUSTOM_APPS
+                     'django.contrib.admin',
+                     'django.contrib.auth',
+                     'django.contrib.contenttypes',
+                     'django.contrib.sessions',
+                     'django.contrib.messages',
+                     'django.contrib.staticfiles',
+                     'rest_framework',
+                 ] + CUSTOM_APPS
 
+CORS_ALLOW_CREDENTIALS = True  # to accept cookies via ajax request
+CORS_ORIGIN_WHITELIST = [
+    'http://localhost:3000'  # the domain for front-end app(you can add more than 1)
+]
+REST_FRAMEWORK = {
+    'DEFAULT_PERMISSION_CLASSES': (
+        'rest_framework.permissions.IsAuthenticated',  # make all endpoints private
+    )
+}
 MIDDLEWARE = [
     'django.middleware.security.SecurityMiddleware',
     'django.contrib.sessions.middleware.SessionMiddleware',
