@@ -2,9 +2,12 @@ from django.shortcuts import render
 from rest_framework.decorators import api_view
 from rest_framework.response import Response
 from .serializers import UserSerializer
+from rest_framework.views import APIView
 
-@api_view(['GET'])
-def profile(request):
-    user = request.user
-    serialized_user = UserSerializer(user).data
-    return Response({'user': serialized_user })
+
+class RegisterView(APIView):
+    def post(self, request):
+        serializer = UserSerializer(data=request.data)
+        serializer.is_valid(raise_exception=True)
+        serializer.save()
+        return Response(serializer.data)

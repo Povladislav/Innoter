@@ -46,13 +46,13 @@ INSTALLED_APPS = [
 
 CORS_ALLOW_CREDENTIALS = True  # to accept cookies via ajax request
 CORS_ORIGIN_WHITELIST = [
-    'http://localhost:3000'  # the domain for front-end app(you can add more than 1)
+    'http://localhost:8000'  # the domain for front-end app(you can add more than 1)
 ]
-REST_FRAMEWORK = {
-    'DEFAULT_PERMISSION_CLASSES': (
-        'rest_framework.permissions.IsAuthenticated',  # make all endpoints private
-    )
-}
+# REST_FRAMEWORK = {
+#     'DEFAULT_PERMISSION_CLASSES': (
+#         'rest_framework.permissions.IsAuthenticated',  # make all endpoints private
+#     )
+# }
 MIDDLEWARE = [
     'django.middleware.security.SecurityMiddleware',
     'django.contrib.sessions.middleware.SessionMiddleware',
