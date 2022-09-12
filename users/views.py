@@ -60,11 +60,10 @@ class LoginView(GenericAPIView):
         return response
 
 
-class LogoutView(APIView):
+class LogoutView(GenericAPIView):
     permission_classes = [AllowAny]
+    serializer_class = UserSerializer
 
-    @swagger_auto_schema(method='post', request_body=UserSerializer)
-    @api_view(['POST'])
     def post(self, request):
         response = Response()
         response.delete_cookie('jwt')
