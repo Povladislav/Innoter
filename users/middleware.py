@@ -1,7 +1,9 @@
 import os
+
 import jwt
-from .models import User
 from rest_framework.exceptions import AuthenticationFailed
+
+from .models import User
 
 secret_key = os.environ.get("secret_key")
 class JWTAuthenticationMiddleware:
