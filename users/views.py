@@ -1,3 +1,5 @@
+import os
+
 from rest_framework.permissions import AllowAny
 from rest_framework.response import Response
 from rest_framework.exceptions import AuthenticationFailed
@@ -6,6 +8,7 @@ from rest_framework.views import APIView
 from .models import User
 import jwt, datetime
 
+secret_key = os.environ.get("secret_key")
 
 class RegisterView(APIView):
     permission_classes = [AllowAny]
@@ -37,7 +40,7 @@ class LoginView(APIView):
             "iat": datetime.datetime.utcnow()
         }
 
-        token = jwt.encode(payload, 'secret', algorithm='HS256')
+        token = jwt.encode(payload,secret_key, algorithm='HS256')
 
         response = Response()
         request.META["HTTP_AUTHORIZATION"] = token
