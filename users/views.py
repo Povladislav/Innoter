@@ -2,7 +2,10 @@ import datetime
 import os
 
 import jwt
+from drf_yasg.utils import swagger_auto_schema
+from rest_framework.decorators import api_view
 from rest_framework.exceptions import AuthenticationFailed
+from rest_framework.generics import GenericAPIView
 from rest_framework.permissions import AllowAny
 from rest_framework.response import Response
 from rest_framework.views import APIView
@@ -12,8 +15,10 @@ from .serializers import UserSerializer
 
 secret_key = os.environ.get("secret_key")
 
-class RegisterView(APIView):
+
+class RegisterView(GenericAPIView):
     permission_classes = [AllowAny]
+    serializer_class = UserSerializer
 
     def post(self, request):
         serializer = UserSerializer(data=request.data)
@@ -22,8 +27,9 @@ class RegisterView(APIView):
         return Response(serializer.data)
 
 
-class LoginView(APIView):
+class LoginView(GenericAPIView):
     permission_classes = [AllowAny]
+    serializer_class = UserSerializer
 
     def post(self, request):
         email = request.data['email']
@@ -42,7 +48,7 @@ class LoginView(APIView):
             "iat": datetime.datetime.utcnow()
         }
 
-        token = jwt.encode(payload,secret_key, algorithm='HS256')
+        token = jwt.encode(payload, secret_key, algorithm='HS256')
 
         response = Response()
         request.META["HTTP_AUTHORIZATION"] = token
@@ -54,29 +60,11 @@ class LoginView(APIView):
         return response
 
 
-class UserView(APIView):
-    permission_classes = [AllowAny]
-    def get(self, request):
-        token = request.COOKIES.get('jwt')
-
-        if not token:
-            raise AuthenticationFailed("Unathanticated")
-
-        try:
-
-            payload = jwt.decode(token, 'secret', algorithms=['HS256'])
-        except jwt.ExpiredSignatureError:
-            raise AuthenticationFailed("Unathanticated")
-
-        user = User.objects.filter(id=payload['id']).first()
-        serializer = UserSerializer(user)
-
-        return Response(request.data)
-
-
 class LogoutView(APIView):
     permission_classes = [AllowAny]
 
+    @swagger_auto_schema(method='post', request_body=UserSerializer)
+    @api_view(['POST'])
     def post(self, request):
         response = Response()
         response.delete_cookie('jwt')
