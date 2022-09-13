@@ -1,6 +1,6 @@
 from django.urls import path
 
-from .views import TagView, PostView, PageView
+from .views import PageView, PostView, TagView
 
 urlpatterns = [
     path('tag/', TagView.as_view({"get": "list", "post": "create"})),

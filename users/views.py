@@ -4,13 +4,23 @@ import os
 import jwt
 from rest_framework.exceptions import AuthenticationFailed
 from rest_framework.generics import GenericAPIView
+from rest_framework.mixins import (DestroyModelMixin, ListModelMixin,
+                                   RetrieveModelMixin, UpdateModelMixin)
 from rest_framework.permissions import AllowAny
 from rest_framework.response import Response
+from rest_framework.viewsets import ViewSetMixin
 
 from .models import User
 from .serializers import UserSerializer
 
 secret_key = os.environ.get("secret_key")
+
+
+class UserView(ViewSetMixin, DestroyModelMixin,
+               ListModelMixin, UpdateModelMixin,
+               RetrieveModelMixin, GenericAPIView):
+    queryset = User.objects.all()
+    serializer_class = UserSerializer
 
 
 class RegisterView(GenericAPIView):
@@ -52,20 +62,6 @@ class LoginView(GenericAPIView):
         response.set_cookie(key="jwt", value=token, httponly=True)
         response.data = {
             "jwt": token
-        }
-
-        return response
-
-
-class LogoutView(GenericAPIView):
-    permission_classes = [AllowAny]
-    serializer_class = UserSerializer
-
-    def post(self, request):
-        response = Response()
-        response.delete_cookie('jwt')
-        response.data = {
-            'message': 'success'
         }
 
         return response
