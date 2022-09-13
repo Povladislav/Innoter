@@ -24,7 +24,7 @@ class PostView(ViewSetMixin,
                ListModelMixin,
                CreateModelMixin,
                UpdateModelMixin,
+               RetrieveModelMixin,
                DestroyModelMixin):
     queryset = Post.objects.all()
     serializer_class = PostSerializer
-
