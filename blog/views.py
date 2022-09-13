@@ -25,9 +25,11 @@ class ReadTag(GenericAPIView):
     def get(self, request):
         if request.query_params:
             tags = Tag.objects.filter(**request.query_params.dict())
+            serializer = TagSerializer(tags,many=True)
         else:
             tags = Tag.objects.all()
+            serializer = TagSerializer(tags,many=True)
         if tags:
-            return Response(request.data)
+            return Response(serializer.data)
         else:
             return Response(status=status.HTTP_404_NOT_FOUND)
