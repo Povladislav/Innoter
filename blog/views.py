@@ -25,11 +25,25 @@ class ReadTag(GenericAPIView):
     def get(self, request):
         if request.query_params:
             tags = Tag.objects.filter(**request.query_params.dict())
-            serializer = TagSerializer(tags,many=True)
+            serializer = TagSerializer(tags, many=True)
         else:
             tags = Tag.objects.all()
-            serializer = TagSerializer(tags,many=True)
+            serializer = TagSerializer(tags, many=True)
         if tags:
             return Response(serializer.data)
+        else:
+            return Response(status=status.HTTP_404_NOT_FOUND)
+
+
+class UpdateTag(GenericAPIView):
+    permission_classes = [AllowAny]
+    serializer_class = TagSerializer
+
+    def put(self, request, pk):
+        tag = Tag.objects.get(pk=pk)
+        data = TagSerializer(instance=tag, data=request.data)
+        if data.is_valid():
+            data.save()
+            return Response(data.data)
         else:
             return Response(status=status.HTTP_404_NOT_FOUND)
