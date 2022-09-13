@@ -1,6 +1,6 @@
 from rest_framework import serializers
 
-from .models import Tag, Post
+from .models import Tag, Post, Page
 
 
 class TagSerializer(serializers.ModelSerializer):
@@ -12,4 +12,10 @@ class TagSerializer(serializers.ModelSerializer):
 class PostSerializer(serializers.ModelSerializer):
     class Meta:
         model = Post
+        fields = "__all__"
+
+
+class PageSerializer(serializers.ModelSerializer):
+    class Meta:
+        model = Page
         fields = "__all__"

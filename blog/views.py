@@ -4,8 +4,8 @@ from rest_framework.mixins import (CreateModelMixin, DestroyModelMixin,
 from rest_framework.permissions import AllowAny
 from rest_framework.viewsets import ViewSetMixin
 
-from .models import Tag, Post
-from .serializers import TagSerializer, PostSerializer
+from .models import Tag, Post, Page
+from .serializers import TagSerializer, PostSerializer, PageSerializer
 
 
 class TagView(ViewSetMixin,
@@ -27,4 +27,15 @@ class PostView(ViewSetMixin,
                DestroyModelMixin):
     queryset = Post.objects.all()
     serializer_class = PostSerializer
+    permission_classes = [AllowAny]
+
+
+class PageView(ViewSetMixin,
+               GenericAPIView,
+               ListModelMixin,
+               CreateModelMixin,
+               UpdateModelMixin,
+               DestroyModelMixin):
+    queryset = Page.objects.all()
+    serializer_class = PageSerializer
     permission_classes = [AllowAny]
