@@ -47,3 +47,17 @@ class UpdateTag(GenericAPIView):
             return Response(data.data)
         else:
             return Response(status=status.HTTP_404_NOT_FOUND)
+
+
+class DeleteTag(GenericAPIView):
+    permission_classes = [AllowAny]
+    serializer_class = TagSerializer
+
+    def delete(self, request, pk):
+        tag = Tag.objects.get(pk=pk)
+        data = TagSerializer(instance=tag, data=request.data)
+        if data.is_valid():
+            tag.delete()
+            return Response(data.data)
+        else:
+            return Response(status=status.HTTP_404_NOT_FOUND)
