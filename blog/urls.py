@@ -1,5 +1,6 @@
 from django.urls import path
-from .views import CreateTag, ReadTag,UpdateTag,DeleteTag
+
+from .views import CreateTag, DeleteTag, ReadTag, UpdateTag
 
 urlpatterns = [
     path('create/', CreateTag.as_view(), name="create_tag"),
