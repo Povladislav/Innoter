@@ -1,10 +1,10 @@
 from django.urls import path
 
-from .views import CreateTag, DeleteTag, ReadTag, UpdateTag
+from .views import TagView
 
 urlpatterns = [
-    path('create/', CreateTag.as_view(), name="create_tag"),
-    path('read/', ReadTag.as_view(), name="read_tag"),
-    path('update/<int:pk>/', UpdateTag.as_view(), name="read_tag"),
-    path('tag/<int:pk>/delete', DeleteTag.as_view(), name="read_tag")
+    path('read/', TagView.as_view({"get": "list"}), name="read_tag"),
+    path('create/', TagView.as_view({"post": "create"}), name="create_tag"),
+    path('update/<int:pk>', TagView.as_view({"put": "update"}), name="update_tag"),
+    path('delete/<int:pk>', TagView.as_view({"delete": "destroy"}), name="delete_tag"),
 ]
