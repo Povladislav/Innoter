@@ -1,3 +1,4 @@
+from rest_framework import status
 from rest_framework.generics import GenericAPIView
 from rest_framework.permissions import AllowAny
 from rest_framework.response import Response
@@ -15,3 +16,18 @@ class CreateTag(GenericAPIView):
         serializer.is_valid(raise_exception=True)
         serializer.save()
         return Response(request.data)
+
+
+class ReadTag(GenericAPIView):
+    permission_classes = [AllowAny]
+    serializer_class = TagSerializer
+
+    def get(self, request):
+        if request.query_params:
+            tags = Tag.objects.filter(**request.query_params.dict())
+        else:
+            tags = Tag.objects.all()
+        if tags:
+            return Response(request.data)
+        else:
+            return Response(status=status.HTTP_404_NOT_FOUND)
