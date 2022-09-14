@@ -28,3 +28,6 @@ class Post(models.Model):
     reply_to = models.ForeignKey('blog.Post', on_delete=models.SET_NULL, null=True, related_name='replies')
     created_at = models.DateField(auto_now_add=True)
     updated_at = models.DateField(auto_now=True)
+    owner = models.ForeignKey('users.User',
+                              on_delete=models.CASCADE,
+                              related_name="posts")
