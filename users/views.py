@@ -65,3 +65,16 @@ class LoginView(GenericAPIView):
         }
 
         return response
+
+
+class LogoutView(GenericAPIView):
+    permission_classes = [AllowAny]
+    serializer_class = UserSerializer
+
+    def post(self, request):
+        response = Response()
+        response.delete_cookie('jwt')
+        response.data = {
+            'message': 'success'
+        }
+        return response
