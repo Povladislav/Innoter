@@ -68,7 +68,6 @@ class LoginView(GenericAPIView):
 
 
 class LogoutView(GenericAPIView):
-    permission_classes = [AllowAny]
     serializer_class = UserSerializer
 
     def post(self, request):
