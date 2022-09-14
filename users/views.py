@@ -23,6 +23,12 @@ class UserView(ViewSetMixin, DestroyModelMixin,
     serializer_class = UserSerializer
 
 
+class ShowUser(GenericAPIView):
+    def get(self, request):
+        serializer = UserSerializer(request.user)
+        return Response(serializer.data)
+
+
 class RegisterView(GenericAPIView):
     permission_classes = [AllowAny]
     serializer_class = UserSerializer
@@ -58,7 +64,6 @@ class LoginView(GenericAPIView):
         token = jwt.encode(payload, secret_key, algorithm='HS256')
 
         response = Response()
-        request.META["HTTP_AUTHORIZATION"] = token
         response.set_cookie(key="jwt", value=token, httponly=True)
         response.data = {
             "jwt": token
