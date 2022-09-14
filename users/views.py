@@ -4,13 +4,23 @@ import os
 import jwt
 from rest_framework.exceptions import AuthenticationFailed
 from rest_framework.generics import GenericAPIView
+from rest_framework.mixins import (DestroyModelMixin, ListModelMixin,
+                                   RetrieveModelMixin, UpdateModelMixin)
 from rest_framework.permissions import AllowAny
 from rest_framework.response import Response
+from rest_framework.viewsets import ViewSetMixin
 
 from .models import User
 from .serializers import UserSerializer
 
 secret_key = os.environ.get("secret_key")
+
+
+class UserView(ViewSetMixin, DestroyModelMixin,
+               ListModelMixin, UpdateModelMixin,
+               RetrieveModelMixin, GenericAPIView):
+    queryset = User.objects.all()
+    serializer_class = UserSerializer
 
 
 class RegisterView(GenericAPIView):
@@ -67,5 +77,4 @@ class LogoutView(GenericAPIView):
         response.data = {
             'message': 'success'
         }
-
         return response

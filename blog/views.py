@@ -1,10 +1,11 @@
 from rest_framework.generics import GenericAPIView
 from rest_framework.mixins import (CreateModelMixin, DestroyModelMixin,
-                                   ListModelMixin, UpdateModelMixin, RetrieveModelMixin)
+                                   ListModelMixin, RetrieveModelMixin,
+                                   UpdateModelMixin)
 from rest_framework.viewsets import ViewSetMixin
 
-from .models import Tag, Post, Page
-from .serializers import TagSerializer, PostSerializer, PageSerializer
+from .models import Page, Post, Tag
+from .serializers import PageSerializer, PostSerializer, TagSerializer
 
 
 class TagView(ViewSetMixin,
