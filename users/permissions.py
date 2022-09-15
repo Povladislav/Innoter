@@ -11,6 +11,13 @@ class IsAuthorUser(permissions.BasePermission):
         return bool(obj.owner == request.user)
 
 
+class IsOwnerOfPage(permissions.BasePermission):
+    def has_object_permission(self, request, view, obj):
+        if request.method in permissions.SAFE_METHODS:
+            return True
+        return bool(obj.page.owner == request.user)
+
+
 # Checking if User is Moderator to give him particular rights
 class IsUserModerator(permissions.BasePermission):
     def has_object_permission(self, request, view, obj):

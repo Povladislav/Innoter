@@ -5,7 +5,7 @@ from rest_framework.mixins import (CreateModelMixin, DestroyModelMixin,
 from rest_framework.permissions import IsAdminUser
 from rest_framework.viewsets import ViewSetMixin
 
-from users.permissions import IsAuthorUser, IsUserModerator
+from users.permissions import IsAuthorUser, IsOwnerOfPage, IsUserModerator
 
 from .models import Page, Post, Tag
 from .serializers import PageSerializer, PostSerializer, TagSerializer
@@ -33,8 +33,9 @@ class PostView(ViewSetMixin,
     serializer_class = PostSerializer
 
     def get_serializer_class(self):
-        if self.action == "update" or self.action == "destroy" or self.action == "retrieve":
-            permission_classes = [IsAdminUser | IsAuthorUser | IsUserModerator]
+        if self.action in ['update', 'destory',
+                           'retrieve']:
+            permission_classes = [IsAdminUser | IsOwnerOfPage | IsUserModerator]
         return [permission() for permission in permission_classes]
 
 
@@ -49,6 +50,7 @@ class PageView(ViewSetMixin,
     serializer_class = PageSerializer
 
     def get_serializer_class(self):
-        if self.action == "update" or self.action == "destroy" or self.action == "retrieve":
+        if self.action in ['update', 'destory',
+                           'retrieve']:
             permission_classes = [IsAdminUser | IsAuthorUser | IsUserModerator]
         return [permission() for permission in permission_classes]
