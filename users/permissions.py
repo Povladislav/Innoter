@@ -23,4 +23,4 @@ class IsUserModerator(permissions.BasePermission):
     def has_object_permission(self, request, view, obj):
         if request.method in permissions.SAFE_METHODS:
             return True
-        return bool(obj.owner == User.Roles.choices.MODERATOR)
+        return bool(request.user == User.Roles.choices.MODERATOR)
