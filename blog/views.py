@@ -3,8 +3,7 @@ from rest_framework.mixins import (CreateModelMixin, DestroyModelMixin,
                                    ListModelMixin, RetrieveModelMixin,
                                    UpdateModelMixin)
 from rest_framework.viewsets import ViewSetMixin
-from rest_framework.permissions import AllowAny
-
+from rest_framework.permissions import IsAdminUser
 from .models import Page, Post, Tag
 from .serializers import PageSerializer, PostSerializer, TagSerializer
 
@@ -31,6 +30,11 @@ class PostView(ViewSetMixin,
                DestroyModelMixin):
     queryset = Post.objects.all()
     serializer_class = PostSerializer
+
+    def get_serializer_class(self):
+        if self.action == "update" or self.action == "destroy" or self.action == "retrieve":
+            permission_classes = [IsAdminUser, IsAuthorUser]
+        return [permission() for permission in permission_classes]
 
 
 class PageView(ViewSetMixin,

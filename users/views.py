@@ -21,14 +21,6 @@ class UserView(ViewSetMixin, DestroyModelMixin,
                RetrieveModelMixin, GenericAPIView):
     queryset = User.objects.all()
     serializer_class = UserSerializer
-
-
-class ShowUser(GenericAPIView):
-    def get(self, request):
-        serializer = UserSerializer(request.user)
-        return Response(serializer.data)
-
-
 class RegisterView(GenericAPIView):
     permission_classes = [AllowAny]
     serializer_class = UserSerializer
