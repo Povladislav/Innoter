@@ -1,18 +1,19 @@
 import os
+
+from django.utils.decorators import method_decorator
+from django.views.decorators.csrf import ensure_csrf_cookie
+from rest_framework import exceptions
 from rest_framework.generics import GenericAPIView
 from rest_framework.mixins import (DestroyModelMixin, ListModelMixin,
                                    RetrieveModelMixin, UpdateModelMixin)
 from rest_framework.permissions import AllowAny
 from rest_framework.response import Response
 from rest_framework.viewsets import ViewSetMixin
-from rest_framework import exceptions
+
+from users.utils import generate_access_token, generate_refresh_token
 
 from .models import User
 from .serializers import UserSerializer
-from django.utils.decorators import method_decorator
-from django.views.decorators.csrf import ensure_csrf_cookie
-
-from users.utils import generate_access_token, generate_refresh_token
 
 
 class UserView(ViewSetMixin, DestroyModelMixin,
@@ -64,7 +65,6 @@ class LoginView(GenericAPIView):
 
 class LogoutView(GenericAPIView):
     serializer_class = UserSerializer
-
 
     def post(self, request):
         response = Response()

@@ -1,6 +1,7 @@
 import datetime
-import jwt
 import os
+
+import jwt
 from django.conf import settings
 
 secret_key = os.environ.get("secret_key")

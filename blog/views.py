@@ -2,12 +2,13 @@ from rest_framework.generics import GenericAPIView
 from rest_framework.mixins import (CreateModelMixin, DestroyModelMixin,
                                    ListModelMixin, RetrieveModelMixin,
                                    UpdateModelMixin)
-from rest_framework.viewsets import ViewSetMixin
 from rest_framework.permissions import IsAdminUser
+from rest_framework.viewsets import ViewSetMixin
+
+from users.permissions import IsAuthorUser, IsUserModerator
+
 from .models import Page, Post, Tag
 from .serializers import PageSerializer, PostSerializer, TagSerializer
-
-from users.permissions import IsUserModerator, IsAuthorUser
 
 
 class TagView(ViewSetMixin,
