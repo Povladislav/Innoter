@@ -34,7 +34,7 @@ class PostView(ViewSetMixin,
 
     def get_serializer_class(self):
         if self.action == "update" or self.action == "destroy" or self.action == "retrieve":
-            permission_classes = [IsAdminUser, IsAuthorUser]
+            permission_classes = [IsAdminUser | IsAuthorUser | IsUserModerator]
         return [permission() for permission in permission_classes]
 
 
@@ -47,3 +47,8 @@ class PageView(ViewSetMixin,
                DestroyModelMixin):
     queryset = Page.objects.all()
     serializer_class = PageSerializer
+
+    def get_serializer_class(self):
+        if self.action == "update" or self.action == "destroy" or self.action == "retrieve":
+            permission_classes = [IsAdminUser | IsAuthorUser | IsUserModerator]
+        return [permission() for permission in permission_classes]
