@@ -4,5 +4,6 @@ djangorestframework==3.13.1
 PyJWT==2.4.0
 django-cors-headers==3.13.0
 drf_yasg
+django-celery-beat
 
 
