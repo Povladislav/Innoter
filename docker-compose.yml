@@ -28,15 +28,19 @@ services:
   celery:
     build: .
     command: celery -A innoter worker -l info
+    env_file:
+      - .env.dev
     volumes:
       - ./project/:/usr/src/code/
     depends_on:
       - redis
-  celery-beat:
+  celery-beats:
     build: .
     command: celery -A innoter beat -l info --scheduler django_celery_beat.schedulers:DatabaseScheduler
+    env_file:
+      - .env.dev
     volumes:
-      - .:/var/lib/postgresql/data
+      - ./project/:/usr/src/code/
     depends_on:
       - redis
 

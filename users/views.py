@@ -60,10 +60,13 @@ class LoginView(GenericAPIView):
 
         return response
 
+
 class CurrentUserView(GenericAPIView):
     def get(self, request):
         serializer = UserSerializer(request.user)
         return Response(serializer.data)
+
+
 class LogoutView(GenericAPIView):
     serializer_class = UserSerializer
 
