@@ -10,7 +10,7 @@ def sample_task():
 
 @shared_task
 def unban_user_task():
-    users = User.objects.all()
+    users = User.objects.filter(bantime__gte=0)
     for user in users:
         if user.bantime > 0:
             user.bantime -= 1
