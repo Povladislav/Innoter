@@ -1,5 +1,7 @@
 from celery import shared_task
 
+from .models import User
+
 
 @shared_task
 def sample_task():
@@ -7,5 +9,12 @@ def sample_task():
 
 
 @shared_task
-def easy_task():
-    return "Hello"
+def unban_user_task():
+    users = User.objects.all()
+    for user in users:
+        if user.bantime > 0:
+            user.bantime -= 1
+            user.save()
+            if user.bantime == 0:
+                user.is_blocked = False
+                user.save()
