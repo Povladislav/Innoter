@@ -14,6 +14,7 @@ class AdminLogic(GenericAPIView):
         if time is None:
             user_to_ban = User.objects.get(pk=id)
             user_to_ban.is_active = False
+            user_to_ban.is_blocked = True
             user_to_ban.save()
             return Response({"banned": "successfully permanently banned"})
         return Response({"banned": f"successfully banned for {time} hours"})
