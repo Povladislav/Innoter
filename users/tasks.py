@@ -10,11 +10,9 @@ def sample_task():
 
 @shared_task
 def unban_user_task():
-    users = User.objects.filter(bantime__gte=0)
+    users = User.objects.filter(bantime__gt=0)
     for user in users:
-        if user.bantime > 0:
-            user.bantime -= 1
-            user.save()
-            if user.bantime == 0:
-                user.is_blocked = False
-                user.save()
+        user.bantime -= 1
+        if user.bantime == 0:
+            user.is_blocked = False
+        user.save()
