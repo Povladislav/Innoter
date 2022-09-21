@@ -12,7 +12,6 @@ def sample_task():
 @shared_task
 def unban_user_task():
     users = User.objects.filter(time_before_unban__lte=timezone.now())
-    print(users)
     for user in users:
         user.is_blocked = False
         user.save()

@@ -1,8 +1,6 @@
 import datetime
 
-from rest_framework.exceptions import AuthenticationFailed
 from rest_framework.generics import GenericAPIView
-# from rest_framework.permissions import IsAuthenticated,IsAdminUser
 from rest_framework.response import Response
 
 from .models import User
