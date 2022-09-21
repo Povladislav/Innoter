@@ -1,5 +1,8 @@
 version: "3.8"
 services:
+  redis:
+    image: redis
+    restart: always
   web:
     restart: always
     build:
@@ -22,6 +25,25 @@ services:
       - POSTGRES_DB=postgres
       - POSTGRES_USER=postgres
       - POSTGRES_PASSWORD=postgres
+  celery:
+    build: .
+    command: celery -A innoter worker -l info
+    env_file:
+      - .env.dev
+    volumes:
+      - ./project/:/usr/src/code/
+    depends_on:
+      - redis
+  celery-beats:
+    build: .
+    command: celery -A innoter beat -l info --scheduler django_celery_beat.schedulers:DatabaseScheduler
+    env_file:
+      - .env.dev
+    volumes:
+      - ./project/:/usr/src/code/
+    depends_on:
+      - redis
+
 
 
 

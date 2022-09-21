@@ -14,7 +14,7 @@ class JWTAuthenticationMiddleware:
         self.get_response = response
 
     def __call__(self, request):
-        exclude_path = ("/accounts/login/",)
+        exclude_path = ("/accounts/login/", "/accounts/register/")
         jwt_token = request.headers.get('Authorization')
         if not jwt_token or request.path in exclude_path:
             return self.get_response(request)
