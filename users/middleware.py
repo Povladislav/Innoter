@@ -1,7 +1,6 @@
 import os
 
 import jwt
-from django.utils.functional import SimpleLazyObject
 from rest_framework.exceptions import AuthenticationFailed
 
 from .models import User

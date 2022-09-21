@@ -1,4 +1,7 @@
+import uuid
+
 from django.db import models
+from django.utils import timezone
 
 
 class Tag(models.Model):
@@ -7,7 +10,7 @@ class Tag(models.Model):
 
 class Page(models.Model):
     name = models.CharField(max_length=80)
-    uuid = models.UUIDField(max_length=30, unique=True)
+    uuid = models.UUIDField(max_length=30, unique=True, default=uuid.uuid4)
     description = models.TextField()
     tags = models.ManyToManyField(Tag, related_name='pages')
     owner = models.ForeignKey('users.User',
@@ -19,7 +22,8 @@ class Page(models.Model):
     is_private = models.BooleanField(default=False)
     follow_requests = models.ManyToManyField('users.User',
                                              related_name='requests')
-    unblock_date = models.DateField(null=True, blank=True)
+    time_before_unban = models.DateTimeField(default=timezone.now, blank=True)
+    is_blocked = models.BooleanField(default=False)
 
 
 class Post(models.Model):
