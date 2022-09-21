@@ -7,10 +7,10 @@ from rest_framework.response import Response
 from blog.models import Page
 
 from .models import User
-from .permissions import IsUserAdm
+from .permissions import IsUserAdm, IsUserModerator
 
 
-class BanUsers(GenericAPIView):
+class BanUsersView(GenericAPIView):
     permission_classes = [IsUserAdm]
 
     def post(self, request, id):
@@ -28,8 +28,8 @@ class BanUsers(GenericAPIView):
         return Response({"banned": f"successfully banned for {time} minutes"})
 
 
-class BanPages(GenericAPIView):
-    permission_classes = [IsUserAdm]
+class BanPagesView(GenericAPIView):
+    permission_classes = [IsUserAdm, IsUserModerator]
 
     def post(self, request, id):
         time = self.request.data['bantime']
@@ -38,3 +38,6 @@ class BanPages(GenericAPIView):
         page_to_ban.time_before_unban = timezone.now() + datetime.timedelta(minutes=time)
         page_to_ban.save()
         return Response({"banned": f"page successfully banned for {time} minutes"})
+
+
+
