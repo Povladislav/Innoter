@@ -1,3 +1,5 @@
+import datetime
+
 from rest_framework.exceptions import AuthenticationFailed
 from rest_framework.generics import GenericAPIView
 # from rest_framework.permissions import IsAuthenticated,IsAdminUser
@@ -20,6 +22,6 @@ class AdminLogic(GenericAPIView):
             return Response({"banned": "successfully permanently banned"})
         user_to_ban = User.objects.get(pk=id)
         user_to_ban.is_blocked = True
-        user_to_ban.bantime = time
+        user_to_ban.time_before_unban += datetime.timedelta(minutes=time)
         user_to_ban.save()
         return Response({"banned": f"successfully banned for {time} minutes"})
