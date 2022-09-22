@@ -3,7 +3,6 @@ from rest_framework import permissions
 from .models import User
 
 
-# Checking if User is correct to give him access to personal information.
 class IsAuthorUser(permissions.BasePermission):
     def has_object_permission(self, request, view, obj):
         if request.method in permissions.SAFE_METHODS:
@@ -11,24 +10,22 @@ class IsAuthorUser(permissions.BasePermission):
         return bool(obj.owner == request.user)
 
 
-class IsOwnerOfPage(permissions.BasePermission):
+class is_owner_of_page(permissions.BasePermission):
     def has_object_permission(self, request, view, obj):
         if request.method in permissions.SAFE_METHODS:
             return True
-        return bool(obj.page.owner == request.user)
+        return bool(obj.owner == request.user)
 
 
-class IsUserAdm(permissions.BasePermission):
+class is_user_adm(permissions.BasePermission):
     def has_permission(self, request, view):
         if request.method in permissions.SAFE_METHODS:
             return True
         return bool(request.user.role == User.Roles.ADMIN)
 
 
-
-# Checking if User is Moderator to give him particular rights
-class IsUserModerator(permissions.BasePermission):
-    def has_object_permission(self, request, view, obj):
+class is_user_moderator(permissions.BasePermission):
+    def has_permission(self, request, view):
         if request.method in permissions.SAFE_METHODS:
             return True
-        return bool(request.user == User.Roles.choices.MODERATOR)
+        return bool(request.user.role == User.Roles.MODERATOR)
