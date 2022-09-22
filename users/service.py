@@ -7,11 +7,11 @@ from rest_framework.response import Response
 from blog.models import Page
 
 from .models import User
-from .permissions import IsOwnerOfPage, IsUserAdm, IsUserModerator
+from .permissions import is_owner_of_page, is_user_adm, is_user_moderator
 
 
-class BanUsersView(GenericAPIView):
-    permission_classes = [IsUserAdm]
+class banusers_view(GenericAPIView):
+    permission_classes = [is_user_adm]
 
     def post(self, request, id):
         time = self.request.data['bantime']
@@ -28,8 +28,8 @@ class BanUsersView(GenericAPIView):
         return Response({"banned": f"successfully banned for {time} minutes"})
 
 
-class BanPagesView(GenericAPIView):
-    permission_classes = [IsUserAdm | IsUserModerator]
+class banpages_view(GenericAPIView):
+    permission_classes = [is_user_adm | is_user_moderator]
 
     def post(self, request, id):
         time = self.request.data['bantime']
@@ -40,22 +40,24 @@ class BanPagesView(GenericAPIView):
         return Response({"banned": f"page successfully banned for {time} minutes"})
 
 
-class FollowPageView(GenericAPIView):
+class followpage_view(GenericAPIView):
     def get(self, request, id):
         page = Page.objects.get(pk=id)
         user = request.user
         if page.is_private:
             page.follow_requests.add(user)
-        page.followers.add(user)
+        else:
+            page.followers.add(user)
         return Response({"subscribed": f"user {user} successfully subscribed on {page}"})
 
 
-class AcceptAllFollowersForPageView(GenericAPIView):
-    permission_classes = [IsOwnerOfPage]
+class accept_all_followers_page_view(GenericAPIView):
+    permission_classes = [is_owner_of_page]
     queryset = Page.objects.all()
 
     def put(self, request, pk):
         page = self.get_object()
+        request.page = page
         if page.is_private:
             users = page.follow_requests.all()
             page.followers.add(*users)
@@ -65,8 +67,8 @@ class AcceptAllFollowersForPageView(GenericAPIView):
             return Response({"accepted": "page is not private!"})
 
 
-class AcceptFollowerForPageView(GenericAPIView):
-    permission_classes = [IsOwnerOfPage]
+class accept_follower_for_page_view(GenericAPIView):
+    permission_classes = [is_owner_of_page]
     queryset = Page.objects.all()
 
     def put(self, request, pk, idOfUser):

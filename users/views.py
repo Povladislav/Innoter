@@ -14,14 +14,14 @@ from .models import User
 from .serializers import UserSerializer
 
 
-class UserView(ViewSetMixin, DestroyModelMixin,
-               ListModelMixin, UpdateModelMixin,
-               RetrieveModelMixin, GenericAPIView):
+class user_view(ViewSetMixin, DestroyModelMixin,
+                ListModelMixin, UpdateModelMixin,
+                RetrieveModelMixin, GenericAPIView):
     queryset = User.objects.all()
     serializer_class = UserSerializer
 
 
-class RegisterView(GenericAPIView):
+class register_view(GenericAPIView):
     permission_classes = [AllowAny]
     serializer_class = UserSerializer
 
@@ -32,7 +32,7 @@ class RegisterView(GenericAPIView):
         return Response(serializer.data)
 
 
-class LoginView(GenericAPIView):
+class login_view(GenericAPIView):
     permission_classes = [AllowAny]
     serializer_class = UserSerializer
 
@@ -67,7 +67,7 @@ class CurrentUserView(GenericAPIView):
         return Response(serializer.data)
 
 
-class LogoutView(GenericAPIView):
+class logout_view(GenericAPIView):
     serializer_class = UserSerializer
 
     def post(self, request):
