@@ -1,10 +1,12 @@
 import datetime
 
+from django.db.models import Q
 from django.utils import timezone
 from rest_framework.generics import GenericAPIView
 from rest_framework.response import Response
 
-from blog.models import Page
+from blog.models import Page, Post
+from blog.serializers import PostSerializer
 
 from .models import User
 from .permissions import is_owner_of_page, is_user_adm, is_user_moderator
@@ -79,3 +81,26 @@ class accept_follower_for_page_view(GenericAPIView):
             return Response({"accepted": "user was successfully accepted"})
         else:
             return Response({"accepted": "page is not private!"})
+
+
+class like_post(GenericAPIView):
+
+    def get(self, request, pk):
+        post_to_like = Post.objects.get(pk=pk)
+        request.user.likes.add(post_to_like)
+        return Response({"liked": "successfully"})
+
+
+class unlike_post(GenericAPIView):
+
+    def get(self, request, pk):
+        post_to_like = Post.objects.get(pk=pk)
+        request.user.likes.remove(post_to_like)
+        return Response({"unliked": "successfully"})
+
+
+class show_news(GenericAPIView):
+    def get(self, request):
+        posts = Post.objects.filter(Q(page__owner=request.user) | Q(page__followers=request.user))
+        serializer = PostSerializer(posts, many=True)
+        return Response(serializer.data)
