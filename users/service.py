@@ -1,15 +1,16 @@
 import datetime
 
+from django.utils import timezone
 from rest_framework.generics import GenericAPIView
 from rest_framework.response import Response
 
+from blog.models import Page
+
 from .models import User
-from .permissions import IsUserAdm
-
-from django.utils import timezone
+from .permissions import IsUserAdm, IsUserModerator
 
 
-class AdminLogic(GenericAPIView):
+class BanUsersView(GenericAPIView):
     permission_classes = [IsUserAdm]
 
     def post(self, request, id):
@@ -25,3 +26,18 @@ class AdminLogic(GenericAPIView):
         user_to_ban.time_before_unban = timezone.now() + datetime.timedelta(minutes=time)
         user_to_ban.save()
         return Response({"banned": f"successfully banned for {time} minutes"})
+
+
+class BanPagesView(GenericAPIView):
+    permission_classes = [IsUserAdm, IsUserModerator]
+
+    def post(self, request, id):
+        time = self.request.data['bantime']
+        page_to_ban = Page.objects.get(pk=id)
+        page_to_ban.is_blocked = True
+        page_to_ban.time_before_unban = timezone.now() + datetime.timedelta(minutes=time)
+        page_to_ban.save()
+        return Response({"banned": f"page successfully banned for {time} minutes"})
+
+
+
