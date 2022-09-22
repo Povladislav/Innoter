@@ -40,4 +40,11 @@ class BanPagesView(GenericAPIView):
         return Response({"banned": f"page successfully banned for {time} minutes"})
 
 
-
+class FollowPageView(GenericAPIView):
+    def get(self, request, id):
+        page = Page.objects.get(pk=id)
+        user = request.user
+        if page.is_private:
+            page.follow_requests.add(user)
+        page.followers.add(user)
+        return Response({"subscribed":f"user {user} successfully subscribed on {page}"})
