@@ -21,7 +21,8 @@ class Page(models.Model):
                             blank=True)
     is_private = models.BooleanField(default=False)
     follow_requests = models.ManyToManyField('users.User',
-                                             related_name='requests')
+                                             related_name='requests',
+                                             blank=True)
     time_before_unban = models.DateTimeField(default=timezone.now, blank=True)
     is_blocked = models.BooleanField(default=False)
 

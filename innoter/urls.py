@@ -22,7 +22,6 @@ from rest_framework import permissions
 from blog import urls as blog_urls
 from users import urls as accounts_urls
 
-
 schema_view = get_schema_view(
     openapi.Info(
         title="Snippets API",
