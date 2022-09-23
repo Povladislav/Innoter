@@ -1,5 +1,7 @@
 from rest_framework import serializers
 
+from users.models import User
+
 from .models import Page, Post, Tag
 
 
@@ -10,9 +12,11 @@ class TagSerializer(serializers.ModelSerializer):
 
 
 class PostSerializer(serializers.ModelSerializer):
+    owner = serializers.CharField(source='page.owner')
+
     class Meta:
         model = Post
-        fields = "__all__"
+        fields = ['content', 'created_at','owner']
 
 
 class PageSerializer(serializers.ModelSerializer):

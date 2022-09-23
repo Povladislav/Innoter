@@ -1,16 +1,18 @@
 import datetime
 
+from django.db.models import Q
 from django.utils import timezone
 from rest_framework.generics import GenericAPIView
 from rest_framework.response import Response
 
-from blog.models import Page
+from blog.models import Page, Post
+from blog.serializers import PostSerializer
 
 from .models import User
 from .permissions import is_owner_of_page, is_user_adm, is_user_moderator
 
 
-class banusers_view(GenericAPIView):
+class BanUsersView(GenericAPIView):
     permission_classes = [is_user_adm]
 
     def post(self, request, id):
@@ -28,7 +30,7 @@ class banusers_view(GenericAPIView):
         return Response({"banned": f"successfully banned for {time} minutes"})
 
 
-class banpages_view(GenericAPIView):
+class BanPagesView(GenericAPIView):
     permission_classes = [is_user_adm | is_user_moderator]
 
     def post(self, request, id):
@@ -40,7 +42,7 @@ class banpages_view(GenericAPIView):
         return Response({"banned": f"page successfully banned for {time} minutes"})
 
 
-class followpage_view(GenericAPIView):
+class FollowpageView(GenericAPIView):
     def get(self, request, id):
         page = Page.objects.get(pk=id)
         user = request.user
@@ -51,7 +53,7 @@ class followpage_view(GenericAPIView):
         return Response({"subscribed": f"user {user} successfully subscribed on {page}"})
 
 
-class accept_all_followers_page_view(GenericAPIView):
+class AcceptAllFollowersPageView(GenericAPIView):
     permission_classes = [is_owner_of_page]
     queryset = Page.objects.all()
 
@@ -67,7 +69,7 @@ class accept_all_followers_page_view(GenericAPIView):
             return Response({"accepted": "page is not private!"})
 
 
-class accept_follower_for_page_view(GenericAPIView):
+class AcceptFollowerForPageView(GenericAPIView):
     permission_classes = [is_owner_of_page]
     queryset = Page.objects.all()
 
@@ -79,3 +81,33 @@ class accept_follower_for_page_view(GenericAPIView):
             return Response({"accepted": "user was successfully accepted"})
         else:
             return Response({"accepted": "page is not private!"})
+
+
+class LikePostView(GenericAPIView):
+
+    def post(self, request, pk):
+        post_to_like = Post.objects.get(pk=pk)
+        request.user.likes.add(post_to_like)
+        return Response({"liked": "successfully"})
+
+
+class UnlikePostView(GenericAPIView):
+
+    def post(self, request, pk):
+        post_to_like = Post.objects.get(pk=pk)
+        request.user.likes.remove(post_to_like)
+        return Response({"unliked": "successfully"})
+
+
+class ShowNewsView(GenericAPIView):
+    def get(self, request):
+        posts = Post.objects.filter(Q(page__owner=request.user) | Q(page__followers=request.user))
+        serializer = PostSerializer(posts, many=True)
+        return Response(serializer.data)
+
+
+class ShowLikedPosts(GenericAPIView):
+    def get(self, request):
+        posts = Post.objects.filter(liked_posts=True)
+        serializer = PostSerializer(posts, many=True)
+        return Response(serializer.data)

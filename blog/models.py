@@ -16,7 +16,7 @@ class Page(models.Model):
     owner = models.ForeignKey('users.User',
                               on_delete=models.CASCADE,
                               related_name='pages')
-    followers = models.ManyToManyField('users.User', related_name='follows')
+    followers = models.ManyToManyField('users.User', related_name='follows', blank=True)
     image = models.URLField(null=True,
                             blank=True)
     is_private = models.BooleanField(default=False)
@@ -30,6 +30,6 @@ class Page(models.Model):
 class Post(models.Model):
     page = models.ForeignKey(Page, on_delete=models.CASCADE, related_name='posts')
     content = models.CharField(max_length=100)
-    reply_to = models.ForeignKey('blog.Post', on_delete=models.SET_NULL, null=True, related_name='replies')
+    reply_to = models.ForeignKey('blog.Post', on_delete=models.SET_NULL, null=True, related_name='replies', blank=True)
     created_at = models.DateField(auto_now_add=True)
     updated_at = models.DateField(auto_now=True)
