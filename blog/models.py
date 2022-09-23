@@ -3,6 +3,8 @@ import uuid
 from django.db import models
 from django.utils import timezone
 
+from django.core.validators import FileExtensionValidator
+
 
 class Tag(models.Model):
     name = models.CharField(max_length=30, unique=True)
@@ -19,6 +21,9 @@ class Page(models.Model):
     followers = models.ManyToManyField('users.User', related_name='follows', blank=True)
     image = models.URLField(null=True,
                             blank=True)
+    image_file = models.ImageField(null=True,
+                                   blank=True,
+                                   validators=[FileExtensionValidator(['png', 'jpg', 'jpeg'])])
     is_private = models.BooleanField(default=False)
     follow_requests = models.ManyToManyField('users.User',
                                              related_name='requests',

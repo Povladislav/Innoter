@@ -10,21 +10,21 @@ class IsAuthorUser(permissions.BasePermission):
         return bool(obj.owner == request.user)
 
 
-class is_owner_of_page(permissions.BasePermission):
+class IsOwnerOfPage(permissions.BasePermission):
     def has_object_permission(self, request, view, obj):
         if request.method in permissions.SAFE_METHODS:
             return True
         return bool(obj.owner == request.user)
 
 
-class is_user_adm(permissions.BasePermission):
+class IsUserAdm(permissions.BasePermission):
     def has_permission(self, request, view):
         if request.method in permissions.SAFE_METHODS:
             return True
         return bool(request.user.role == User.Roles.ADMIN)
 
 
-class is_user_moderator(permissions.BasePermission):
+class IsUserModerator(permissions.BasePermission):
     def has_permission(self, request, view):
         if request.method in permissions.SAFE_METHODS:
             return True

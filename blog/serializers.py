@@ -16,10 +16,12 @@ class PostSerializer(serializers.ModelSerializer):
 
     class Meta:
         model = Post
-        fields = ['content', 'created_at','owner']
+        fields = ['content', 'created_at', 'owner']
 
 
 class PageSerializer(serializers.ModelSerializer):
+    owner = serializers.CharField(source='owner.username')
+
     class Meta:
         model = Page
-        fields = "__all__"
+        fields = ['id', 'name', 'uuid', 'image', 'owner']

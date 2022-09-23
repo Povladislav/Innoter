@@ -6,14 +6,16 @@ from rest_framework.generics import GenericAPIView
 from rest_framework.response import Response
 
 from blog.models import Page, Post
-from blog.serializers import PostSerializer
+from blog.serializers import PostSerializer, PageSerializer
+
+from users.serializers import UserSerializer
 
 from .models import User
-from .permissions import is_owner_of_page, is_user_adm, is_user_moderator
+from .permissions import IsOwnerOfPage, IsUserAdm, IsUserModerator
 
 
 class BanUsersView(GenericAPIView):
-    permission_classes = [is_user_adm]
+    permission_classes = [IsUserAdm]
 
     def post(self, request, id):
         time = self.request.data['bantime']
@@ -38,7 +40,7 @@ class BanUsersView(GenericAPIView):
 
 
 class BanPagesView(GenericAPIView):
-    permission_classes = [is_user_adm | is_user_moderator]
+    permission_classes = [IsUserAdm | IsUserModerator]
 
     def post(self, request, id):
         time = self.request.data['bantime']
@@ -61,7 +63,7 @@ class FollowpageView(GenericAPIView):
 
 
 class AcceptAllFollowersPageView(GenericAPIView):
-    permission_classes = [is_owner_of_page]
+    permission_classes = [IsOwnerOfPage]
     queryset = Page.objects.all()
 
     def put(self, request, pk):
@@ -77,7 +79,7 @@ class AcceptAllFollowersPageView(GenericAPIView):
 
 
 class AcceptFollowerForPageView(GenericAPIView):
-    permission_classes = [is_owner_of_page]
+    permission_classes = [IsOwnerOfPage]
     queryset = Page.objects.all()
 
     def put(self, request, pk, idOfUser):
@@ -118,3 +120,22 @@ class ShowLikedPosts(GenericAPIView):
         posts = Post.objects.filter(liked_posts=True)
         serializer = PostSerializer(posts, many=True)
         return Response(serializer.data)
+
+
+class SearchPageView(GenericAPIView):
+    def post(self, request):
+        name = request.data.get("name")
+        uuid = request.data.get("uuid")
+
+        username = request.data.get("username")
+
+        page = Page.objects.get(Q(name=name) | Q(uuid=uuid))
+        user = User.objects.get(username=username)
+        page_serializer = PageSerializer(page).data
+        user_serializer = UserSerializer(user).data
+        response = Response()
+        response.data = {
+            "page": page_serializer,
+            "user": user_serializer,
+        }
+        return response
