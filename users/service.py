@@ -104,3 +104,10 @@ class ShowNewsView(GenericAPIView):
         posts = Post.objects.filter(Q(page__owner=request.user) | Q(page__followers=request.user))
         serializer = PostSerializer(posts, many=True)
         return Response(serializer.data)
+
+
+class ShowLikedPosts(GenericAPIView):
+    def get(self, request):
+        posts = Post.objects.filter(liked_posts=True)
+        serializer = PostSerializer(posts, many=True)
+        return Response(serializer.data)
