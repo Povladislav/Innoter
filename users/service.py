@@ -6,24 +6,33 @@ from rest_framework.generics import GenericAPIView
 from rest_framework.response import Response
 
 from blog.models import Page, Post
-from blog.serializers import PostSerializer
+from blog.serializers import PostSerializer, PageSerializer
+
+from users.serializers import UserSerializer
 
 from .models import User
-from .permissions import is_owner_of_page, is_user_adm, is_user_moderator
+from .permissions import IsOwnerOfPage, IsUserAdm, IsUserModerator
 
 
 class BanUsersView(GenericAPIView):
-    permission_classes = [is_user_adm]
+    permission_classes = [IsUserAdm]
 
     def post(self, request, id):
         time = self.request.data['bantime']
         if time is None:
             user_to_ban = User.objects.get(pk=id)
+            page_of_users_to_ban = Page.objects.filter(owner=user_to_ban)
+            page_of_users_to_ban.delete()
             user_to_ban.is_active = False
             user_to_ban.is_blocked = True
             user_to_ban.save()
             return Response({"banned": "successfully permanently banned"})
         user_to_ban = User.objects.get(pk=id)
+        page_of_users_to_ban = Page.objects.filter(owner=user_to_ban)
+        for page in page_of_users_to_ban:
+            page.time_before_unban = timezone.now() + datetime.timedelta(minutes=time)
+            page.is_blocked = True
+            page.save()
         user_to_ban.is_blocked = True
         user_to_ban.time_before_unban = timezone.now() + datetime.timedelta(minutes=time)
         user_to_ban.save()
@@ -31,7 +40,7 @@ class BanUsersView(GenericAPIView):
 
 
 class BanPagesView(GenericAPIView):
-    permission_classes = [is_user_adm | is_user_moderator]
+    permission_classes = [IsUserAdm | IsUserModerator]
 
     def post(self, request, id):
         time = self.request.data['bantime']
@@ -54,7 +63,7 @@ class FollowpageView(GenericAPIView):
 
 
 class AcceptAllFollowersPageView(GenericAPIView):
-    permission_classes = [is_owner_of_page]
+    permission_classes = [IsOwnerOfPage]
     queryset = Page.objects.all()
 
     def put(self, request, pk):
@@ -70,7 +79,7 @@ class AcceptAllFollowersPageView(GenericAPIView):
 
 
 class AcceptFollowerForPageView(GenericAPIView):
-    permission_classes = [is_owner_of_page]
+    permission_classes = [IsOwnerOfPage]
     queryset = Page.objects.all()
 
     def put(self, request, pk, idOfUser):
@@ -111,3 +120,22 @@ class ShowLikedPosts(GenericAPIView):
         posts = Post.objects.filter(liked_posts=True)
         serializer = PostSerializer(posts, many=True)
         return Response(serializer.data)
+
+
+class SearchPageView(GenericAPIView):
+    def post(self, request):
+        name = request.data.get("name")
+        uuid = request.data.get("uuid")
+
+        username = request.data.get("username")
+
+        page = Page.objects.get(Q(name=name) | Q(uuid=uuid))
+        user = User.objects.get(username=username)
+        page_serializer = PageSerializer(page).data
+        user_serializer = UserSerializer(user).data
+        response = Response()
+        response.data = {
+            "page": page_serializer,
+            "user": user_serializer,
+        }
+        return response

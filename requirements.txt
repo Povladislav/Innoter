@@ -8,3 +8,4 @@ celery
 redis
 django-celery-beat
 django-timezone-field==4.0
+Pillow
