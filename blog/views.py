@@ -11,24 +11,24 @@ from .models import Page, Post, Tag
 from .serializers import PageSerializer, PostSerializer, TagSerializer
 
 
-class tag_view(ViewSetMixin,
+class TagView(ViewSetMixin,
+              GenericAPIView,
+              ListModelMixin,
+              CreateModelMixin,
+              UpdateModelMixin,
+              RetrieveModelMixin,
+              DestroyModelMixin):
+    queryset = Tag.objects.all()
+    serializer_class = TagSerializer
+
+
+class PostView(ViewSetMixin,
                GenericAPIView,
                ListModelMixin,
                CreateModelMixin,
                UpdateModelMixin,
                RetrieveModelMixin,
                DestroyModelMixin):
-    queryset = Tag.objects.all()
-    serializer_class = TagSerializer
-
-
-class post_view(ViewSetMixin,
-                GenericAPIView,
-                ListModelMixin,
-                CreateModelMixin,
-                UpdateModelMixin,
-                RetrieveModelMixin,
-                DestroyModelMixin):
     queryset = Post.objects.all()
     serializer_class = PostSerializer
 
@@ -39,13 +39,13 @@ class post_view(ViewSetMixin,
         return [permission() for permission in permission_classes]
 
 
-class page_view(ViewSetMixin,
-                GenericAPIView,
-                ListModelMixin,
-                CreateModelMixin,
-                UpdateModelMixin,
-                RetrieveModelMixin,
-                DestroyModelMixin):
+class PageView(ViewSetMixin,
+               GenericAPIView,
+               ListModelMixin,
+               CreateModelMixin,
+               UpdateModelMixin,
+               RetrieveModelMixin,
+               DestroyModelMixin):
     queryset = Page.objects.all()
     serializer_class = PageSerializer
 
