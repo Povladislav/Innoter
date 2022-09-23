@@ -19,11 +19,18 @@ class BanUsersView(GenericAPIView):
         time = self.request.data['bantime']
         if time is None:
             user_to_ban = User.objects.get(pk=id)
+            page_of_users_to_ban = Page.objects.filter(owner=user_to_ban)
+            page_of_users_to_ban.delete()
             user_to_ban.is_active = False
             user_to_ban.is_blocked = True
             user_to_ban.save()
             return Response({"banned": "successfully permanently banned"})
         user_to_ban = User.objects.get(pk=id)
+        page_of_users_to_ban = Page.objects.filter(owner=user_to_ban)
+        for page in page_of_users_to_ban:
+            page.time_before_unban = timezone.now() + datetime.timedelta(minutes=time)
+            page.is_blocked = True
+            page.save()
         user_to_ban.is_blocked = True
         user_to_ban.time_before_unban = timezone.now() + datetime.timedelta(minutes=time)
         user_to_ban.save()
