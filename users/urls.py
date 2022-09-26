@@ -29,7 +29,7 @@ urlpatterns = [
     path('accept/page/<int:pk>/all/', AcceptAllFollowersPageView.as_view(), name='accept_all_folowers'),
     path('accept/page/<int:pk>/user/<int:idOfUser>/', AcceptFollowerForPageView.as_view(),
          name='accept_particular_follower'),
-    path('user/', UserView.as_view({"get": "list"})),
+    path('users/', UserView.as_view({"get": "list"})),
     path('logout/', LogoutView.as_view(), name='logout'),
     path('user/<int:pk>/', UserView.as_view({"put": "update", "delete": "destroy", "get": "retrieve"}))
 ]
