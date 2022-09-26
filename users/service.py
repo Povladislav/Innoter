@@ -18,7 +18,7 @@ class BanUsersView(GenericAPIView):
     permission_classes = [IsUserAdm]
 
     def post(self, request, id):
-        time = self.request.data['bantime']
+        time = self.request.data.get("bantime")
         if time is None:
             user_to_ban = User.objects.get(pk=id)
             page_of_users_to_ban = Page.objects.filter(owner=user_to_ban)
