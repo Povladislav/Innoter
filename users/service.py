@@ -6,7 +6,7 @@ from rest_framework.generics import GenericAPIView
 from rest_framework.response import Response
 
 from blog.models import Page, Post
-from blog.serializers import PostSerializer, PageSerializer
+from blog.serializers import PostSerializer, PageSerializer, UserPageSerializer
 
 from users.serializers import UserSerializer
 
@@ -18,7 +18,7 @@ class BanUsersView(GenericAPIView):
     permission_classes = [IsUserAdm]
 
     def post(self, request, id):
-        time = self.request.data['bantime']
+        time = self.request.data.get("bantime")
         if time is None:
             user_to_ban = User.objects.get(pk=id)
             page_of_users_to_ban = Page.objects.filter(owner=user_to_ban)
@@ -94,16 +94,16 @@ class AcceptFollowerForPageView(GenericAPIView):
 
 class LikePostView(GenericAPIView):
 
-    def post(self, request, pk):
-        post_to_like = Post.objects.get(pk=pk)
+    def post(self, request, id):
+        post_to_like = Post.objects.get(id=id)
         request.user.likes.add(post_to_like)
         return Response({"liked": "successfully"})
 
 
 class UnlikePostView(GenericAPIView):
 
-    def post(self, request, pk):
-        post_to_like = Post.objects.get(pk=pk)
+    def post(self, request, id):
+        post_to_like = Post.objects.get(id=id)
         request.user.likes.remove(post_to_like)
         return Response({"unliked": "successfully"})
 
@@ -128,14 +128,14 @@ class SearchPageView(GenericAPIView):
         uuid = request.data.get("uuid")
 
         username = request.data.get("username")
+        pages = Page.objects.filter(Q(name=name) | Q(uuid=uuid)).first()
+        users = User.objects.filter(username=username).first()
+        page_serializer = PageSerializer(pages).data
+        user_serializer = UserSerializer(users).data
 
-        page = Page.objects.get(Q(name=name) | Q(uuid=uuid))
-        user = User.objects.get(username=username)
-        page_serializer = PageSerializer(page).data
-        user_serializer = UserSerializer(user).data
         response = Response()
         response.data = {
             "page": page_serializer,
-            "user": user_serializer,
+            "user": user_serializer
         }
         return response

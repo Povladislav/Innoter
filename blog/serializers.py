@@ -1,6 +1,7 @@
 from rest_framework import serializers
 
 from users.models import User
+from users.serializers import UserSerializer
 
 from .models import Page, Post, Tag
 
@@ -25,3 +26,8 @@ class PageSerializer(serializers.ModelSerializer):
     class Meta:
         model = Page
         fields = ['id', 'name', 'uuid', 'image', 'owner']
+
+
+class UserPageSerializer(serializers.Serializer):
+    user = UserSerializer()
+    page = PageSerializer()
