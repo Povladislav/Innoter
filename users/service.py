@@ -6,7 +6,7 @@ from rest_framework.generics import GenericAPIView
 from rest_framework.response import Response
 
 from blog.models import Page, Post
-from blog.serializers import PostSerializer, PageSerializer
+from blog.serializers import PostSerializer, PageSerializer, UserPageSerializer
 
 from users.serializers import UserSerializer
 
@@ -128,14 +128,14 @@ class SearchPageView(GenericAPIView):
         uuid = request.data.get("uuid")
 
         username = request.data.get("username")
+        pages = Page.objects.filter(Q(name=name) | Q(uuid=uuid)).first()
+        users = User.objects.filter(username=username).first()
+        page_serializer = PageSerializer(pages).data
+        user_serializer = UserSerializer(users).data
 
-        page = Page.objects.get(Q(name=name) | Q(uuid=uuid))
-        user = User.objects.get(username=username)
-        page_serializer = PageSerializer(page).data
-        user_serializer = UserSerializer(user).data
         response = Response()
         response.data = {
             "page": page_serializer,
-            "user": user_serializer,
+            "user": user_serializer
         }
         return response
