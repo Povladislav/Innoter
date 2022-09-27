@@ -41,7 +41,7 @@ def test_register_the_same_user(user):
 
     data = response.data
 
-    assert data["username"] != payload["username"]
+    assert response.status_code != 200
 
 
 def test_login_user(user):

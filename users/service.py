@@ -94,16 +94,16 @@ class AcceptFollowerForPageView(GenericAPIView):
 
 class LikePostView(GenericAPIView):
 
-    def post(self, request, pk):
-        post_to_like = Post.objects.get(pk=pk)
+    def post(self, request, id):
+        post_to_like = Post.objects.get(id=id)
         request.user.likes.add(post_to_like)
         return Response({"liked": "successfully"})
 
 
 class UnlikePostView(GenericAPIView):
 
-    def post(self, request, pk):
-        post_to_like = Post.objects.get(pk=pk)
+    def post(self, request, id):
+        post_to_like = Post.objects.get(id=id)
         request.user.likes.remove(post_to_like)
         return Response({"unliked": "successfully"})
 
