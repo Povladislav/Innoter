@@ -20,6 +20,7 @@ class TagView(ViewSetMixin,
               DestroyModelMixin):
     queryset = Tag.objects.all()
     serializer_class = TagSerializer
+    lookup_field = 'id'
 
 
 class PostView(ViewSetMixin,
@@ -31,6 +32,7 @@ class PostView(ViewSetMixin,
                DestroyModelMixin):
     queryset = Post.objects.all()
     serializer_class = PostSerializer
+    lookup_field = 'id'
 
     def get_serializer_class(self):
         if self.action in ['update', 'destory',
@@ -48,6 +50,7 @@ class PageView(ViewSetMixin,
                DestroyModelMixin):
     queryset = Page.objects.all()
     serializer_class = PageSerializer
+    lookup_field = 'id'
 
     def get_serializer_class(self):
         if self.action in ['update', 'destory',

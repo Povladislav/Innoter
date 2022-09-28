@@ -58,7 +58,7 @@ def test_follow_page(user, page2):
 
 def test_accept_all_private_users(user, page):
     client.force_authenticate(user)
-    response = client.put(reverse('accept_all_followers', kwargs={"pk": 1}))
+    response = client.put(reverse('accept_all_followers', kwargs={"id": 1}))
     assert response.status_code == 200
     assert page.followers.first().username == user.username
     assert response.data.get('accepted') == 'users were successfully accepted'
@@ -66,7 +66,7 @@ def test_accept_all_private_users(user, page):
 
 def test_accept_not_private_all_users(user, page2):
     client.force_authenticate(user)
-    response = client.put(reverse('accept_all_followers', kwargs={"pk": 2}))
+    response = client.put(reverse('accept_all_followers', kwargs={"id": 2}))
     assert response.status_code == 200
     assert response.data.get('accepted') == 'page is not private!'
 

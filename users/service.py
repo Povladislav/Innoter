@@ -52,6 +52,8 @@ class BanPagesView(GenericAPIView):
 
 
 class FollowpageView(GenericAPIView):
+    lookup_field = 'id'
+
     def get(self, request, id):
         page = Page.objects.get(id=id)
         user = request.user
@@ -65,8 +67,9 @@ class FollowpageView(GenericAPIView):
 class AcceptAllFollowersPageView(GenericAPIView):
     permission_classes = [IsOwnerOfPage]
     queryset = Page.objects.all()
+    lookup_field = "id"
 
-    def put(self, request, pk):
+    def put(self, request, id):
         page = self.get_object()
         request.page = page
         if page.is_private:
