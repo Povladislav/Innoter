@@ -19,7 +19,7 @@ def user():
 
 @pytest.fixture
 def tag():
-    tag = Tag.objects.create(name="TestTag")
+    tag = Tag.objects.create(pk=1, name="TestTag")
     return tag
 
 

@@ -3,8 +3,6 @@ from rest_framework.test import APIClient
 
 from users.models import User
 
-from blog.models import Page, Post
-
 from django.urls import reverse
 
 client = APIClient()
