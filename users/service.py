@@ -53,13 +53,13 @@ class BanPagesView(GenericAPIView):
 
 class FollowpageView(GenericAPIView):
     def get(self, request, id):
-        page = Page.objects.get(pk=id)
+        page = Page.objects.get(id=id)
         user = request.user
         if page.is_private:
             page.follow_requests.add(user)
         else:
             page.followers.add(user)
-        return Response({"subscribed": f"user {user} successfully subscribed on {page}"})
+        return Response({"subscribed": f"user {user} successfully subscribed on {page}", "subscription": "done"})
 
 
 class AcceptAllFollowersPageView(GenericAPIView):
@@ -82,10 +82,10 @@ class AcceptFollowerForPageView(GenericAPIView):
     permission_classes = [IsOwnerOfPage]
     queryset = Page.objects.all()
 
-    def put(self, request, pk, idOfUser):
+    def put(self, request, pk, id):
         page = self.get_object()
         if page.is_private:
-            user = page.follow_requests.get(pk=idOfUser)
+            user = page.follow_requests.get(pk=id)
             page.followers.add(user)
             return Response({"accepted": "user was successfully accepted"})
         else:
